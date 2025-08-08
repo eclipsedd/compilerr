@@ -1,19 +1,21 @@
-# Makefile
 FLEX = flex
 CC = gcc
 CFLAGS = -O2
+SRC = src/lexer.l
 
 TARGET = lexer
+LEXER_C = lexer.c
 
 all: $(TARGET)
 
-$(TARGET): lexer.c
-	$(CC) $(CFLAGS) -o $(TARGET) lexer.c -lfl
+$(TARGET): $(LEXER_C)
+	$(CC) $(CFLAGS) -o $(TARGET) $(LEXER_C) -lfl
 
-lexer.c: src/lexer.l
-	$(FLEX) -o lexer.c src/lexer.l
+$(LEXER_C): $(SRC)
+	@mkdir -p $(dir $@)
+	$(FLEX) -o $(LEXER_C) $(SRC)
 
 clean:
-	rm -f lexer lexer.c *.o
+	rm -f $(TARGET) $(LEXER_C) *.o
 
 .PHONY: all clean

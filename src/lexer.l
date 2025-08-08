@@ -5,44 +5,35 @@
 
 %option noyywrap
 
-// macros 
+/* macros */
 DIGIT       [0-9]
-NONZERO     [1-9]
 ID_START    [A-Za-z_]
 ID_CONT     [A-Za-z0-9_]
-SIGNS       [+-]?
 
-EXP   ([e][+-]?{DIGIT}+)
+EXP         [eE][+-]?{DIGIT}+
 
-FLOAT ({DIGIT}+\.{DIGIT}*({EXP})? | \.{DIGIT}+({EXP})? | {DIGIT}+{EXP})
+FLOAT       ({DIGIT}+\.{DIGIT}*({EXP})? | \.{DIGIT}+({EXP})? | {DIGIT}+{EXP})
 
-INT     ({DIGIT}+)
+INT         {DIGIT}+
 
-IDENT       ({ID_START}{ID_CONT}*)
+IDENT       {ID_START}{ID_CONT}*
 
-ESC_SEQ   (\\[nt0\'\"\\])  
-CHAR_LIT  (\'({ESC_SEQ}|[^\'\\\n])\')
+ESC_SEQ     (\\[nt0\'\"\\])
+CHAR_LIT    \'({ESC_SEQ}|[^\'\\\n])\'
 
+LINE_COMMENT    \/\/[^\n]*
+BLOCK_COMMENT   \/\*([^*]|\*+[^*/])*\*+\/
 
-// comment
-LINE_COMMENT    (\/\/[^\n]*)
-BLOCK_COMMENT   (\/\*([^*]|\*+[^*/])*\*+\/)
-
-// preproc
-PREPROC     (^([ \t]*)\#[^\n]*)
+PREPROC     ^[ \t]*\#[^\n]*
 
 OP_MULTI    (\+\+|--|==|!=|<=|>=|<<=|>>=|<<|>>|->|::|\+=|-=|\*=|\/=|%=|&=|\|=|\^=|&&|\|\||=>)
-OP_SINGLE   ([=+\-*/%<>&|^~!?:])
+OP_SINGLE   [=+\-*/%<>&|^~!?:
 
-PUNCT       ([\(\)\{\}\[\],;\.:])
+PUNCT       [\(\)\{\}\[\],;\.:]
 
-KEYWORD     ("auto"|"break"|"case"|"char"|"const"|"continue"|"do"|"double"|"else"|"enum"|"float"|"for"|"goto"|"if"|"inline"|"int"|"long"|"new"|"return"|"short"|"signed"|"sizeof"|"static"|"static_assert"|"switch"|"throw"|"try"|"typedef"|"void"|"while"|"import")
-
---------------------------------------------------------------------------------------
+KEYWORD     (auto|break|case|char|const|continue|do|double|else|enum|float|for|goto|if|inline|int|long|new|return|short|signed|sizeof|static|static_assert|switch|throw|try|typedef|void|while|import)
 
 %%
-
-// Rules in order
 
 {PREPROC}           { printf("%s\tpreprocessor\n", yytext); }
 
@@ -50,15 +41,13 @@ KEYWORD     ("auto"|"break"|"case"|"char"|"const"|"continue"|"do"|"double"|"else
 
 {IDENT}             { printf("%s\tidentifier\n", yytext); }
 
-{DEC_FLOAT}([fFlL]?) { printf("%s\tfloat\n", yytext); }
-{DEC_INT}([uUlL]{1,2})?  { printf("%s\tinteger\n", yytext); }
+{FLOAT}([fFlL]?)    { printf("%s\tfloat\n", yytext); }
+{INT}               { printf("%s\tinteger\n", yytext); }
 
-{RAW_STR}           { printf("%s\traw_string\n", yytext); }
-{STR_LIT}           { printf("%s\tstring\n", yytext); }
 {CHAR_LIT}          { printf("%s\tchar\n", yytext); }
 
 {LINE_COMMENT}      { /* skip or print if you want */ printf("%s\tcomment_line\n", yytext); }
-{BLOCK_COMMENT}     { /* beware: this naive pattern won't handle nested comments */ printf("%s\tcomment_block\n", yytext); }
+{BLOCK_COMMENT}     { /* note: doesn't support nested comments */ printf("%s\tcomment_block\n", yytext); }
 
 {OP_MULTI}          { printf("%s\toperator\n", yytext); }
 {OP_SINGLE}         { printf("%s\toperator\n", yytext); }
@@ -67,11 +56,9 @@ KEYWORD     ("auto"|"break"|"case"|"char"|"const"|"continue"|"do"|"double"|"else
 
 [ \t\r\n]+          { /* skip whitespace silently */ }
 
-/* anything else (fallback) */
 .                   { printf("%s\tunknown\n", yytext); }
 
 %%
-
 
 int main(int argc, char **argv) {
     yylex();

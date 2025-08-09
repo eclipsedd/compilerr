@@ -16,6 +16,8 @@ FLOAT       ({DIGIT}+\.{DIGIT}*({EXP})?|\.{DIGIT}+({EXP})?|{DIGIT}+{EXP})
 
 INT         {DIGIT}+
 
+BOOL        (true|false)
+
 IDENT       {ID_START}{ID_CONT}*
 
 ESC_SEQ     (\\[nt0\'\"\\])
@@ -31,17 +33,27 @@ OP_SINGLE   [=+\-*/%<>&|^~!?:]
 
 PUNCT       [\(\)\{\}\[\],;\.:]
 
-KEYWORD     (auto|break|case|char|const|continue|do|double|else|enum|float|for|goto|if|inline|int|long|new|return|short|signed|sizeof|static|static_assert|switch|throw|try|typedef|void|while|import)
+KEYWORD     (auto|break|case|char|const|continue|do|double|else|enum|float|for|goto|if|inline|int|long|new|return|short|signed|sizeof|static|static_assert|switch|throw|try|typedef|void|while|import|class|struct|namespace|using|public|private|protected|virtual|override|constexpr|noexcept|typename|template)
 
 %%
 
 {PREPROC}           { printf("%s\tpreprocessor\n", yytext); }
 
+(nullptr|NULL)     { printf("%s\tnull_literal\n", yytext); }
+
+(cin|cout|cerr) { printf("%s\tstream\n", yytext); }
+
+(vector|string|map|set|list|deque|unordered_map|unordered_set|pair) {
+    printf("%s\tstl_type\n", yytext);
+}
+
 {KEYWORD}           { printf("%s\tkeyword\n", yytext); }
+
+{BOOL}               { printf("%s\tboolean\n", yytext); }
 
 {IDENT}             { printf("%s\tidentifier\n", yytext); }
 
-{FLOAT}([fFlL]?)    { printf("%s\tfloat\n", yytext); }
+{FLOAT}([fF]?)    { printf("%s\tfloat\n", yytext); }
 {INT}               { printf("%s\tinteger\n", yytext); }
 
 {CHAR_LIT}          { printf("%s\tchar\n", yytext); }

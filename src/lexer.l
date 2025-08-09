@@ -12,7 +12,7 @@ ID_CONT     [A-Za-z0-9_]
 
 EXP         [eE][+-]?{DIGIT}+
 
-FLOAT       ({DIGIT}+\.{DIGIT}*({EXP})? | \.{DIGIT}+({EXP})? | {DIGIT}+{EXP})
+FLOAT       ({DIGIT}+\.{DIGIT}*({EXP})?|\.{DIGIT}+({EXP})?|{DIGIT}+{EXP})
 
 INT         {DIGIT}+
 

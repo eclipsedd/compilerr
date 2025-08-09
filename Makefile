@@ -3,6 +3,10 @@ CC = gcc
 CFLAGS = -O2
 SRC = src/lexer.l
 
+
+fixscript:
+	dos2unix run.sh
+
 TARGET = lexer
 LEXER_C = lexer.c
 

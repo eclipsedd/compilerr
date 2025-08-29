@@ -1,24 +1,25 @@
 FLEX = flex
-CC = gcc
-CFLAGS = -O2
+CXX = g++
+# CXXFLAGS = -Wall
+
+
 SRC = src/lexer.l
 
-TARGET = lexer
 LEXER_C = lexer.c
+TARGET = lexer
 
-all: fixscript $(TARGET)
+all: clean fixscript $(TARGET)
 
 fixscript:
-	dos2unix run.sh
+	@sed -i 's/\r$$//' run.sh
 
 $(TARGET): $(LEXER_C)
-	$(CC) $(CFLAGS) -o $(TARGET) $(LEXER_C) -lfl
+	@$(CXX) $(CXXFLAGS) -o $(TARGET) $(LEXER_C) -lfl
 
 $(LEXER_C): $(SRC)
-	@mkdir -p $(dir $@)
-	$(FLEX) -o $(LEXER_C) $(SRC)
+	@$(FLEX) -o $(LEXER_C) $(SRC)
 
 clean:
-	rm -f $(TARGET) $(LEXER_C) *.o
+	@rm -f $(TARGET) $(LEXER_C) *.o
 
 .PHONY: all clean fixscript

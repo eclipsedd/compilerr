@@ -1,7 +1,6 @@
 #!/bin/bash
 # Make sure to give execute permission: chmod +x run.sh
 
-echo "Compiling..."
 make
 
 if [ ! -f lexer ]; then
@@ -9,9 +8,9 @@ if [ ! -f lexer ]; then
     exit 1
 fi
 
-echo "Running lexer on test files..."
+echo "Running lexer on test files"
 
-for file in test/*.txt; do
+for file in test/*.c; do
     echo -e "\n--- Output for $file ---"
     ./lexer < "$file"
 done
